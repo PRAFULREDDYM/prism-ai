@@ -1,0 +1,209 @@
+{
+  "defaultIntent": "CONCEPTUAL",
+  "intents": {
+    "CODE": {
+      "threshold": 2.6,
+      "keywords": [
+        "function",
+        "class",
+        "import",
+        "syntax",
+        "implement",
+        "refactor",
+        "test",
+        "bug",
+        "compile",
+        "deploy",
+        "async",
+        "await",
+        "return",
+        "loop",
+        "variable",
+        "method",
+        "api",
+        "endpoint",
+        "schema",
+        "module",
+        "runtime",
+        "dependency",
+        "typescript",
+        "javascript",
+        "python"
+      ],
+      "patterns": [
+        "\\bwrite (?:a|an|the)?\\s*(?:function|class|module|script)\\b",
+        "\\bimplement\\b",
+        "\\brefactor\\b",
+        "\\bunit test\\b",
+        "\\bintegration test\\b",
+        "\\bcode\\b",
+        "\\bcompile\\b",
+        "\\bdeploy\\b",
+        "\\bapi endpoint\\b",
+        "\\bhow do i code\\b"
+      ]
+    },
+    "FACTUAL": {
+      "threshold": 2.4,
+      "keywords": [
+        "define",
+        "capital",
+        "population",
+        "date",
+        "history",
+        "timeline",
+        "country",
+        "city",
+        "president",
+        "founder",
+        "invented",
+        "measurement",
+        "statistic",
+        "meaning",
+        "fact"
+      ],
+      "patterns": [
+        "\\bwhat is\\b",
+        "\\bwho is\\b",
+        "\\bwhen did\\b",
+        "\\bwhere is\\b",
+        "\\bhow many\\b",
+        "\\bwhat does\\b",
+        "\\bdefine\\b",
+        "\\bwhen was\\b",
+        "\\bhow much\\b",
+        "\\bwhat year\\b"
+      ]
+    },
+    "CONCEPTUAL": {
+      "threshold": 2.2,
+      "keywords": [
+        "explain",
+        "understand",
+        "difference",
+        "concept",
+        "theory",
+        "principle",
+        "mechanism",
+        "framework",
+        "model",
+        "intuition",
+        "reasoning",
+        "process",
+        "tradeoff",
+        "system"
+      ],
+      "patterns": [
+        "\\bhow does\\b",
+        "\\bexplain\\b",
+        "\\bdifference between\\b",
+        "\\bwhy does\\b",
+        "\\bwhat happens when\\b",
+        "\\bhelp me understand\\b",
+        "\\bwalk me through\\b",
+        "\\bconcept of\\b",
+        "\\btheory of\\b",
+        "\\bprinciple of\\b"
+      ]
+    },
+    "DECISION": {
+      "threshold": 2.3,
+      "keywords": [
+        "compare",
+        "recommend",
+        "choose",
+        "decision",
+        "tradeoff",
+        "better",
+        "best",
+        "option",
+        "pros",
+        "cons",
+        "versus",
+        "vs",
+        "approach",
+        "strategy"
+      ],
+      "patterns": [
+        "\\bshould i\\b",
+        "\\bwhich is better\\b",
+        "\\bpros and cons\\b",
+        "\\brecommend\\b",
+        "\\bchoose between\\b",
+        "\\bbest approach\\b",
+        "\\btradeoff\\b",
+        "\\bcompare\\b",
+        "\\bwhich one\\b",
+        "\\bworth it\\b"
+      ]
+    },
+    "CREATIVE": {
+      "threshold": 2.2,
+      "keywords": [
+        "write",
+        "create",
+        "generate",
+        "design",
+        "draft",
+        "make",
+        "build",
+        "story",
+        "email",
+        "post",
+        "headline",
+        "script",
+        "copy",
+        "poem",
+        "tagline",
+        "brand"
+      ],
+      "patterns": [
+        "\\bwrite\\b",
+        "\\bcreate\\b",
+        "\\bgenerate\\b",
+        "\\bdesign\\b",
+        "\\bdraft\\b",
+        "\\bmake\\b",
+        "\\bbuild\\b",
+        "\\bstory\\b",
+        "\\bemail\\b",
+        "\\bsocial post\\b"
+      ]
+    },
+    "DEBUG": {
+      "threshold": 2.7,
+      "keywords": [
+        "error",
+        "exception",
+        "undefined",
+        "null",
+        "failing",
+        "broken",
+        "fix",
+        "typeerror",
+        "cannot",
+        "crash",
+        "stacktrace",
+        "traceback",
+        "debug",
+        "issue",
+        "not working"
+      ],
+      "patterns": [
+        "\\bnot working\\b",
+        "\\berror\\b",
+        "\\bexception\\b",
+        "\\bundefined\\b",
+        "\\bnull\\b",
+        "\\bfailing\\b",
+        "\\bbroken\\b",
+        "\\bfix\\b",
+        "\\bwhy is\\b",
+        "\\btypeerror\\b",
+        "\\bcannot read\\b",
+        "\\btraceback\\b",
+        "\\bstack trace\\b"
+      ]
+    }
+  }
+}

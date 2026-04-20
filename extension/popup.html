@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Prism</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="prism-popup">
+    <main class="popup-shell">
+      <section class="popup-header">
+        <div>
+          <p class="popup-eyebrow">Claude proxy</p>
+          <h1>◆ Prism</h1>
+        </div>
+        <label class="popup-toggle">
+          <input id="prism-toggle" type="checkbox" />
+          <span class="popup-toggle-track"></span>
+        </label>
+      </section>
+
+      <section class="popup-status">
+        <p id="proxy-status" class="status-chip">Checking proxy…</p>
+      </section>
+
+      <section class="popup-stats">
+        <div class="stat-row">
+          <span>Requests</span>
+          <strong id="stat-requests">0</strong>
+        </div>
+        <div class="stat-row">
+          <span>Tokens saved</span>
+          <strong id="stat-tokens">0</strong>
+        </div>
+        <div class="stat-row">
+          <span>Avg filler removed</span>
+          <strong id="stat-filler">0</strong>
+        </div>
+      </section>
+    </main>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

@@ -18,18 +18,24 @@
 
 </div>
 
-Prism is a local proxy that sits in front of the Claude API and makes every request sharper before it leaves your machine. It classifies the prompt, activates only the most relevant knowledge domains through a compact system fragment, and strips filler from the response.
+Prism is a local proxy that sits in front of the Claude API and makes every request sharper before it leaves your machine. It classifies the prompt, activates only the most relevant knowledge domains through a compact system fragment, forwards the request with your original Anthropic headers, and strips filler from the response before it comes back. **No embeddings. No vector database. No second model compressing the first.**
 
 <div align="center">
 <img src="./demo.gif" alt="Prism demo" width="600" />
 </div>
 
-Most “context optimization” tools use AI to compress AI, adding latency and cost. Prism uses deterministic BM25 scoring over a fixed knowledge graph and a rule-based intent classifier to route requests into the right semantic lane instantly.
-
 | | Token Cost | Mechanism | Feedback |
 |---|---|---|---|
 | Typical Proxies | 💰 Extra calls | Model-based | Black box |
 | **Prism** | 🆓 Zero | BM25 + Rules | Inspectable CLI |
+
+---
+
+## Why This Exists
+
+Most “context optimization” tools try to use AI to compress AI. That means extra calls, extra latency, more cost, and another layer that can hallucinate before your actual model even starts answering. It is the wrong abstraction.
+
+Prism does the opposite. It uses deterministic BM25 scoring over a fixed knowledge graph, plus a rule-based intent classifier, to route the request into the right semantic lane every time. The system prompt stays lean. The routing stays inspectable. The behavior stays predictable. That is the core innovation: **precise context selection without another model in the loop.**
 
 ---
 
@@ -48,7 +54,8 @@ prism start
 
 ### Option 3: Browser extension
 1. Run Prism locally.
-2. Load the `extension/` folder in `chrome://extensions` via “Load unpacked”.
+2. Open `chrome://extensions` and enable Developer Mode.
+3. Use “Load unpacked” and select the `extension/` folder.
 
 ---
 
@@ -68,33 +75,68 @@ User Prompt
     └── Claude API ──> Response Enforcer (Filler removal) ──> Output
 ```
 
-1. **Intent Classifier**: Classifies prompts into `CODE`, `FACTUAL`, `CONCEPTUAL`, etc., using a deterministic rule set in `rules/intents.json`.
-2. **Knowledge Graph**: Queries 40+ knowledge domains in microseconds. Boosts relevant nodes and expands via graph links.
-3. **Context Injector**: Converts winning domains into a lean system fragment (<300 tokens) via `tiktoken`.
-4. **Response Enforcer**: Strips preamble, sign-offs, and transitions. Labels inline fluff (e.g., `[reason]`, `[context]`).
+### 1. Intent Classifier
+Prism starts by classifying the prompt into one of six deterministic intents: `CODE`, `FACTUAL`, `CONCEPTUAL`, `DECISION`, `CREATIVE`, or `DEBUG`. This is not a model call. It is a scored rule graph driven by keywords, regex phrases, and per-intent thresholds from `rules/intents.json`.
+
+### 2. Knowledge Graph
+Once Prism knows the task shape, it queries an in-memory knowledge graph of 40 Claude knowledge domains using BM25. Every domain is a hardcoded semantic node with keywords, neighboring domains, and intent affinities. Prism scores every node in microseconds and expands top matches via graph links to pull in nearby context.
+
+### 3. Context Injector
+The winning domains are converted into a lean system fragment that tells Claude exactly how to think about the request. The fragment is token-counted with `tiktoken` and kept under 300 tokens, ensuring the routing layer stays compact and predictable.
+
+### 4. Response Enforcer
+After Claude responds, Prism strips the filler: breezy preambles, sign-offs, and empty transitions. Prefixes disappear entirely. Inline fluff gets compact semantic labels such as `[reason]`, `[context]`, or `[caveat]`.
 
 ---
 
-## Usage
+## The Before / After
 
-### Local Development
-```bash
-git clone https://github.com/PRAFULREDDYM/prism-ai.git
-cd prism-ai
-npm install && npm run build
-node bin/prism.js start
+### Prompt before Prism
+```text
+Can you explain what the capital of India is and maybe give me a little context around it?
 ```
 
-### Dry-run Pipeline
-Test classification and routing without calling the API:
-```bash
-prism test "How do I implement a debounced search in React?"
+### What Prism routes (System fragment)
+```text
+Intent: FACTUAL
+Domains: Geography, History, Education
+Answer from Geography knowledge. One direct answer. No padding. Facts only.
+Be dense. Replace meta-commentary with labels: [reason] [context] [caveat] [note]. Skip preamble and sign-off.
 ```
 
-### CLI Commands
-- `prism status`: Show session stats and token savings.
-- `prism domains`: List all loaded knowledge domains.
-- `prism start --port 3180`: Run on a custom port.
+### Response after Prism
+```text
+New Delhi is the capital of India. [note] people often say "Delhi," but the national capital is specifically New Delhi within the National Capital Territory of Delhi.
+```
+
+---
+
+## CLI
+
+Prism ships with a production-ready CLI:
+
+- `prism start`: Starts the local proxy on `localhost:3179`
+- `prism status`: Shows requests processed, average tokens saved, and top intents
+- `prism test "..."`: Dry-runs classification, graph routing, and context injection
+- `prism domains`: Lists all 40 knowledge domains loaded at startup
+
+```text
+◆ Prism v0.1.0
+Knowledge graph: 40 domains loaded
+Proxy: http://localhost:3179
+Route your Claude API calls here instead of api.anthropic.com
+```
+
+---
+
+## Configuration
+
+Environment variables:
+```bash
+PRISM_PORT=3179
+PRISM_ANTHROPIC_BASE_URL=https://api.anthropic.com
+PRISM_STATS_FILE=.prism-session.json
+```
 
 ---
 
@@ -106,9 +148,11 @@ prism test "How do I implement a debounced search in React?"
 
 ## Contributing
 
-We welcome contributions to the knowledge base and routing rules. See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to add:
-- New intent rules to `rules/intents.json`.
-- New filler patterns to `rules/fillers.json`.
+Contributions are welcome. Good issues and PRs include:
+- New intent rules that improve classification (`rules/intents.json`).
+- Tighter filler patterns that remove fluff without erasing meaning (`rules/fillers.json`).
+- Better domain keywords and graph links for more precise BM25 routing.
+- Streaming compatibility improvements and extension polish.
 
 ---
 
